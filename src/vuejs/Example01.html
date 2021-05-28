@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- 개발버전, 도움되는 콘솔 경고를 포함. -->
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<!-- 상용버전, 속도와 용량이 최적화됨. -->
+<!--<script src="https://cdn.jsdelivr.net/npm/vue"></script>-->
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<!-- 선언적 렌더링
+     ViewModel의 message 속성을 바인딩한다.
+-->
+<div>
+    <div id="app01" v-if="seen">
+        {{message}}
+    </div>
+    <!-- ViewModel의 message 속성을 바꾸면 바로 view인 app01의 내용이 바뀐다. -->
+    <button  onclick="app01.message='클릭했네?'"> 위의 메세지를 바꾸어보자.</button>
+    <!-- ViewModel의 seen 속성이 false 이면 해당 view는 안보이는게 아니라. html문에서 아예사라진다. -->
+    <button  onclick="app01.seen=!app01.seen"> 보였다 안보였다하자.</button>
+</div>
+
+
+<!--반복문 -->
+<div id="app02">
+    <ol>
+        <li  v-for="todo in todos">
+            {{ todo.text }}
+        </li>
+    </ol>
+</div>
+
+
+
+<!-- 양방향 바인딩 v-modle -->
+<!-- ViewModel의 message와 input컴포넌트의 입력이 양방향 연결되어 있다. input을 바꾸면 ViewModel의 message 속성도 바뀌면서 p컴포넌트의 값도 바뀐다.
+     반대로 ViewModel의 meesage 속성을 바꿔도 input컴포넌트와 p컴포넌트의 값이 바뀐다.
+-->
+
+
+
+
+<div id="app03">
+    <p>{{message}}</p>
+    <input v-model="message"></input>
+</div>
+
+
+
+</body>
+
+<script>
+    var app01 = new Vue({
+    el:'#app01',
+    data:{
+       message:'안녕하세요 Vue!',
+       seen:true,
+       todo:[
+           { text:'JavaScript 배우기',
+             text: 'Vuew 배우기',
+             text: '굿'
+           }
+           ]
+    }
+    })
+
+
+
+
+    var app02 = new Vue({
+    el:'#app02',
+    data:{
+    todos: [
+      { text: 'JavaScript 배우기' },
+      { text: 'Vue 배우기' },
+      { text: '무언가 멋진 것을 만들기' }
+    ]
+    }
+    })
+
+
+    var app03 = new Vue({
+    el:'#app03',
+    data:{
+        message:'시작값'
+    }
+    })
+
+
+
+
+</script>
+
+
+</html>
