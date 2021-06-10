@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- 개발버전, 도움되는 콘솔 경고를 포함. -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!-- 상용버전, 속도와 용량이 최적화됨. -->
+    <!--<script src="https://cdn.jsdelivr.net/npm/vue"></script>-->
+
+    <script>
+        // 전파는 부모에서 자식으로 전파이다. 자식에서 부모로 전파는 Vuejs에서 오류를 출력한다.
+        Vue.component('custom01',{
+             /// value.number 의 경우 value값을 number로 자동 형변환 한다.
+            template: '<div><input v-model:value.number="input1" type="number"  >\</input> <input  v-model:value.number="input2"  type="number" ></input>\
+                            <p>Auto =  {{autoResult}}</p>\
+                            <p>Manual =  {{total}}</p>\
+                         <button v-on:click="manualResult">계산</button></div>'
+                   ,
+            /// 부모(외부) 와의 통신을 위해서 사용한다. 부모에서 자식(현재 컴포넌트)로 단방향 바인딩이다.
+            /// 실제 내부에서는 data 즉 로컬 변수를 사용해야 한다.
+            props: {
+                input1Default:{
+                      type:Number,
+                      default:1
+                },
+                input2Default:{
+                      type:Number,
+                      default:1
+                },
+
+
+                inputString:{
+                    type:String,
+                    default:"hello"
+                },
+                 // 객체/배열의 기본값은 팩토리 함수에서 반환 되어야 합니다.
+                 propE: {
+                  type: Object,
+                   default: function () {
+                    return { message: 'hello' }
+                   }
+                 },
+                  // 사용자 정의 유효성 검사 가능
+                 propF: {
+                  validator: function (value) {
+                    return value > 10
+                  }
+                }
+            },
+            watch:{
+                // 외부(부모)에서 prop 값을 바꾸었을 때 내부 변수가 바뀌게 하기 위해서 watch를 사용한다.
+                input1Default:function(){ this.input1= this.input1Default}
+            }
+            ,
+            // data 는 함수여야 한다.
+            // component 내에서 사용하는 로컬 변수로 활용한다.
+            data: function(){
+            return {
+                 // prop 값으로 첫 한번 초기화 한다.
+                 input1 : this.input1Default,
+                 input2 : this.input2Default,
+                 total : ""
+                 }
+            }
+            ,
+            methods:{
+                manualResult:function(){
+                    this.total = this.input1+this.input2;
+                    /// 이벤트 발생
+                    this.$emit('totalupdate',this.total);
+                }
+
+            },
+            computed:{
+                autoResult : function(){
+                    return this.input1+this.input2;
+                }
+
+            }
+           }
+        );
+
+
+
+    </script>
+
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<custom01 id="test01" ref="childref" v-on:totalupdate="onTotalUpdate" v-bind:input1-default="input1" ></custom01>
+</body>
+
+<script>
+      var app7 = new Vue({
+        el: '#test01',
+        data: {
+            input1:99
+        },
+        methods:{
+            onTotalUpdate:function(value){
+                alert(value)
+            }
+        }
+    })
+//// 자식 컴포넌트의 메소드 호출
+app7.$refs.childref.manualResult();
+
+//app7.$refs.childref.input1Default=99;
+document.getElementById('test01').setAttribute('input1Default',100);
+app7.input1=88;
+
+</script>
+
+</html>
